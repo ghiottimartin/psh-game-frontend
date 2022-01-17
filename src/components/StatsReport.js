@@ -1,4 +1,17 @@
+import React, { useEffect } from "react";
+import { useDispatch } from 'react-redux';
+
+import { fetchStats, resetStats } from "../actions/StatActions";
+
 function StatsReport() {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(fetchStats());
+        return function limpiar() {
+            dispatch(resetStats());
+        }
+    }, [])
 
     return (
         <section className="psh-game psh-game-report">
