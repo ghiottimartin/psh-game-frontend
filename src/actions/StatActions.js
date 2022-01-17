@@ -5,6 +5,10 @@ import stats from "../api/stats";
 import * as errorMessages from '../constants/MessageConstants';
 import { normalizeData } from "../normalizers/normalizeStats";
 
+//Actions
+import { downloadBlob } from "./FileActions";
+
+//STATS SEARCH
 export const INVALIDATE_STATS = 'INVALIDATE_STATS';
 export const REQUEST_STATS    = "REQUEST_STATS";
 export const RECEIVE_STATS    = "RECEIVE_STATS";
@@ -89,5 +93,59 @@ export function fetchStatsIfNeeded() {
         if (shouldFetchStats(getState())) {
             return dispatch(fetchStats())
         }
+    }
+}
+
+//CSV
+export const REQUEST_CSV = "REQUEST_CSV";
+export const RECEIVE_CSV = "RECEIVE_CSV";
+export const ERROR_CSV   = "ERROR_CSV";
+
+function requestCsv() {
+    return {
+        type: REQUEST_CSV,
+    }
+}
+
+function receiveCsv() {
+    return {
+        type: RECEIVE_CSV,
+        receivedAt: Date.now()
+    }
+}
+
+function errorCsv(error) {
+    return {
+        type: ERROR_CSV,
+        error: error,
+    }
+}
+
+export function downloadCsv() {
+    return dispatch => {
+        dispatch(requestCsv());
+        return stats.csv()
+            .then(function (response) {
+                if (response.status >= 400) {
+                    return Promise.reject(response);
+                } else {
+                    var data = response.blob();
+                    return data;
+                }
+            })
+            .then(function (data) {
+                dispatch(receiveCsv());
+                downloadBlob(data, 'report.csv');
+            })
+            .catch(function (error) {
+                switch (error.status) {
+                    case 401:
+                        dispatch(errorCsv(errorMessages.UNAUTHORIZED_TOKEN));
+                        return;
+                    default:
+                        dispatch(errorCsv(errorMessages.GENERAL_ERROR));
+                        return;
+                }
+            });
     }
 }
