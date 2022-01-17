@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
@@ -6,12 +6,24 @@ import { fetchStats, resetStats } from "../actions/StatActions";
 
 function StatsReport(props) {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
+    const [intervalId, setIntervalId] = useState(0);
 
     useEffect(() => {
         dispatch(fetchStats());
+        
+        let interval = setInterval(
+            () => {
+                dispatch(fetchStats());
+            }, 10000
+        );
+        setIntervalId(interval);
+        
         return function limpiar() {
             dispatch(resetStats());
+            clearInterval(intervalId);
+            setIntervalId(null);
         }
     }, [])
 
