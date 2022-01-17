@@ -36,7 +36,7 @@ function StatsReport(props) {
         return (
             <tr key={stat.id}>
                 <td>{nickname}</td>
-                <td>{score}</td>
+                <td className="font-weight-bold">{score}</td>
                 <td>{createdAt}</td>
             </tr>
         )
@@ -47,7 +47,7 @@ function StatsReport(props) {
             <div className="psh-game-report-container">
                 <h1>Top 10 Players</h1>
                 <div className="table-responsive mt-3 mx-1">
-                    <table className="table psh-game-report-table">
+                    <table className="table psh-game-report-table table-striped">
                         <thead className="thead-dark">
                             <tr>
                                 <th scope="col">Player</th>
