@@ -20,7 +20,7 @@ function StatsReport(props) {
         );
         setIntervalId(interval);
         
-        return function limpiar() {
+        return function clean() {
             dispatch(resetStats());
             clearInterval(intervalId);
             setIntervalId(null);
