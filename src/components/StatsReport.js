@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
+import { connect } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
 import { fetchStats, resetStats } from "../actions/StatActions";
 
-function StatsReport() {
+function StatsReport(props) {
+
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -13,33 +15,48 @@ function StatsReport() {
         }
     }, [])
 
+    const stats = props.stats.allIds.map(idStat => {
+        const stat = props.stats.byId.stats[idStat];
+
+        const score = stat.score;
+        const nickname = stat.nickname;
+        const createdAt = stat.createdAt;
+        return (
+            <tr key={stat.id}>
+                <td>{nickname}</td>
+                <td>{score}</td>
+                <td>{createdAt}</td>
+            </tr>
+        )
+    });
+
     return (
         <section className="psh-game psh-game-report">
-            <div className="table-responsive mt-3 mx-1">
-                <table className="table psh-game-report-table">
-                    <thead className="thead-dark">
-                        <tr>
-                            <th scope="col">Player</th>
-                            <th scope="col">Score</th>
-                            <th scope="col">Creation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Mark</td>
-                            <td>85</td>
-                            <td>01/16/2022</td>
-                        </tr>
-                        <tr>
-                            <td>Lucas</td>
-                            <td>45</td>
-                            <td>01/16/2022</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div className="psh-game-report-container">
+                <h1>Top 10 Players</h1>
+                <div className="table-responsive mt-3 mx-1">
+                    <table className="table psh-game-report-table">
+                        <thead className="thead-dark">
+                            <tr>
+                                <th scope="col">Player</th>
+                                <th scope="col">Score</th>
+                                <th scope="col">Creation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {stats}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     )
 }
 
-export default StatsReport;
+function mapStateToProps(state) {
+    return {
+        stats: state.stats,
+    };
+}
+
+export default connect(mapStateToProps)(StatsReport);

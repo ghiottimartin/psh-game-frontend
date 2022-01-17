@@ -19,7 +19,16 @@
 }
 
 .psh-game .psh-game-report .psh-game-report-table {
-  max-width: 90%;
   margin: 0 auto;
   background-color: #dbd5d5;
+}
+
+.psh-game-report-container {
+  max-width: 90%;
+    margin: 0 auto;
+}
+
+.psh-game-report-container h1 {
+  margin-top: 20px;
+  color: white;
 }
